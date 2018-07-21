@@ -1,58 +1,83 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Helmet } from 'react-helmet'
 import mealdb from '../mealdb-api'
 import RecipeIngredients from '../components/RecipeIngredients'
 import RecipeInstructions from '../components/RecipeInstructions'
 
-export default class Recipe extends React.Component {
+class Recipe extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { recipe: null, isLoading: true }
+    this.state = {
+      recipe: null,
+      isLoading: true,
+    };
   }
 
   async componentDidMount() {
-    var recipe = null
+    let recipe;
+    const {
+      match: {
+        params: {
+          recipeId,
+        },
+      },
+    } = this.props;
+
     try {
-      recipe = await mealdb.getRecipe(this.props.match.params.recipeId)
+      recipe = await mealdb.getRecipe(recipeId);
     } catch(e) {
-      recipe = null
+      recipe = null;
     }
-    this.setState({ recipe, isLoading: false })
+    this.setState({
+      recipe,
+      isLoading: false,
+    });
   }
 
   render() {
-    const { recipe, isLoading } = this.state
+    const {
+      recipe,
+      isLoading,
+    } = this.state
 
     if( isLoading ) {
-      return <div className="message">Cargando...</div>
+      return (
+        <div className="message">{'Cargando...'}</div>
+      );
     }
-    else if( recipe === null ) {
-      return <div className="message">Hubo un problema :(</div>
+
+    if(!recipe) {
+      return (
+        <div className="message">{'Hubo un problema!'}</div>
+      );
     }
 
-    return <div className="Recipe">
-      <Helmet>
-        <title>{ recipe.name }</title>
-      </Helmet>
+    const {
+      name,
+      thumbnail,
+      origin,
+      ingredients,
+      instructions,
+    } = recipe;
 
-      <div className="hero" style={{ backgroundImage: `url(${recipe.thumbnail})` }} />
-
-      <div className="title">
-        <div className="info">
-          <h1>{ recipe.name }</h1>
-          <p>{ recipe.origin }</p>
+    return (
+      <div className="Recipe">
+        <Helmet>
+          <title>{name}</title>
+        </Helmet>
+        <div className="hero" style={{ backgroundImage: `url(${thumbnail})` }} />
+        <div className="title">
+          <div className="info">
+            <h1>{name}</h1>
+            <p>{origin}</p>
+          </div>
         </div>
-        <div>
-        </div>
+        <RecipeIngredients ingredients={ingredients} />
+        <RecipeInstructions instructions={instructions} />
       </div>
-
-
-      <RecipeIngredients ingredients={ recipe.ingredients } />
-
-      <RecipeInstructions instructions={ recipe.instructions } />
-
-    </div>
+    );
   }
-
 }
+
+export default Recipe;
