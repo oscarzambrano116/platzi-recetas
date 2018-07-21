@@ -12,9 +12,12 @@ workbox.precaching.precacheAndRoute(self.__precacheManifest, {})
 // App Shell
 workbox.routing.registerNavigationRoute('/index.html')
 
+// Google Analytics Offline
+workbox.googleAnalytics.initialize()
+
 // La API usa Stale While Revalidate para mayor velocidad
-workbox.routing.registerRoute(/^https?:\/\/www.themealdb.com\/api\/.*/,
-  workbox.strategies.staleWhileRevalidate(), 'GET')
+workbox.routing.registerRoute(/^https?:\/\/www.themealdb.com\/api\/.*/, workbox.strategies.staleWhileRevalidate(),
+ 'GET')
 
 // Last fuentes van con Cache First y vencen al mes
 workbox.routing.registerRoute(/^https:\/\/fonts.(?:googleapis|gstatic).com\/(.*)/,
@@ -27,6 +30,20 @@ workbox.routing.registerRoute(/^https:\/\/fonts.(?:googleapis|gstatic).com\/(.*)
     ]
   }),
   'GET')
+
+// Images cache First
+workbox.routing.registerRoute(
+  /\.(?:png|gif|jpg|jpeg|svg)$/,
+  workbox.strategies.cacheFirst({
+    cacheName: 'images',
+    plugins: [
+      new workbox.expiration.Plugin({
+        maxEntries: 60,
+        maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days a week
+      }),
+    ],
+  }),
+);
 
 // Todo lo demás usa Network First
 workbox.routing.registerRoute(/^https?.*/,
