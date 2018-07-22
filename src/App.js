@@ -28,6 +28,7 @@ export default class App extends React.Component {
               {'Recetas'}
               <IfOnline>{'Offline'}</IfOnline>
             </Link>
+            <Link to="/timer" className="timerLink">⏱</Link>
           </header>
 
           <main>

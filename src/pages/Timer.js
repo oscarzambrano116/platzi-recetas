@@ -10,7 +10,21 @@ class Timer extends Component {
   }
 
   start = async () => {
-    // TODO: Chequear permisos
+    if(!('Notification' in window) || !('serviceWorker' in navigator)) {
+      return alert('Tu browser no soporta notificaciones');
+    }
+
+    if(Notification.permission === 'default') {
+      await Notification.requestPermission();
+    }
+
+    if(Notification.permission === 'blocked') {
+      return alert('Bloqueaste las notificaciones');
+    }
+
+    if(Notification.permission !== 'granted') {
+      return;
+    }
 
     var timer = this.state.timer;
     this.setState({
@@ -30,7 +44,16 @@ class Timer extends Component {
   }
 
   showNotification = async () => {
-    // TODO: Enviar Notificación
+    const registration = await navigator.serviceWorker.getRegistration();
+
+    if(!registration) {
+      return alert('No existe service worker');
+    }
+
+    registration.showNotification("Listo el timer", {
+      body: 'Notificación',
+      img: '/icon.png',
+    });
   }
 
   handleChange = (e) => {
