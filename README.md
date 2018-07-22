@@ -10,11 +10,13 @@ PWA que utiliza la API de MealDB para mostrar recetas con sus instrucciones. Alg
 * Web Share API
 * Creado con [Create React App](https://github.com/facebookincubator/create-react-app).
 
+[Ver la app en producción](https://platzi-recetas-wgvvvrtjmm.now.sh)
+
 ## Scripts
 
-* `npm install` para instalar las dependencias
-* `npm run dev` para entorno de desarrollo
-* `npm run build && npm start` para producción
+* `yarn install` para instalar las dependencias
+* `yarn run dev` para entorno de desarrollo
+* `yarn run build && yarn start` para producción
 
 ## Licencia
 
